@@ -1,0 +1,3 @@
+MONGODB=mongodb://localhost:27017/prueba
+PORT=3000
+LIMIT_DEFAULT=10

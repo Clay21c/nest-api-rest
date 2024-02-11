@@ -10,18 +10,25 @@ import { Model, isValidObjectId } from 'mongoose';
 import { Pokemon } from './entities/pokemon.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaginationDto } from '../common/dto/pagination.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PokemonService {
+  private defaultLimit: number;
   constructor(
     @InjectModel(Pokemon.name)
     private readonly pokemonModel: Model<Pokemon>,
-  ) {}
+
+    private readonly configService: ConfigService,
+  ) {
+    this.defaultLimit = this.configService.get<number>('defaultLimit');
+  }
 
   async create(createPokemonDto: CreatePokemonDto) {
     createPokemonDto.name = createPokemonDto.name.toLowerCase();
     try {
       const pokemon = await this.pokemonModel.create(createPokemonDto);
+
       return pokemon;
     } catch (error) {
       this.handleExceptions(error);
